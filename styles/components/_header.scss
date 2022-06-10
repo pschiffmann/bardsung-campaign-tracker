@@ -1,0 +1,13 @@
+.bct-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+
+  height: 64px;
+  display: flex;
+  align-items: center;
+
+  font-size: 48px;
+  white-space: nowrap;
+  background-color: #fff;
+}

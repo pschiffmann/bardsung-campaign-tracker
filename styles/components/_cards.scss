@@ -1,0 +1,100 @@
+@use "sass:math";
+
+@mixin _card($height) {
+  width: math.div($height, 3.5) * 2.5;
+  height: $height;
+  border: 8px solid #000;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+
+.bct-hero-profile-card {
+  @include _card(300px);
+  grid:
+    "name" 32px
+    "image" minmax(0, 1fr)
+    / 100%;
+
+  &__path {
+    grid-area: 1 / 1 / span 2 / span 2;
+    place-self: start;
+    margin: 4px;
+    width: 144px;
+    height: 144px;
+    opacity: 0.5;
+  }
+
+  &__name {
+    z-index: 0;
+    grid-area: name;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  &__image {
+    z-index: 0;
+    grid-area: image;
+    width: 160px;
+
+    &--missing {
+      grid-area: 1 / 1 / span 2 / span 2;
+      width: auto;
+      color: #444;
+      font-family: sans-serif;
+      font-size: 40px;
+    }
+  }
+}
+
+.bct-ability-card {
+  @include _card(180px);
+  grid: "center" 100% / 100%;
+
+  &__path {
+    grid-area: center;
+    place-self: start;
+    margin: 4px;
+    width: 80px;
+    height: 80px;
+    opacity: 0.5;
+  }
+
+  &__name {
+    z-index: 0;
+    grid-area: center;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  &__level {
+    z-index: 0;
+    grid-area: center;
+    place-self: end;
+    margin: 4px;
+  }
+}
+
+.bct-item-card {
+  @include _card(180px);
+  grid: "center" 100% / 100%;
+
+  &__name {
+    z-index: 0;
+    grid-area: center;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  &__level {
+    z-index: 0;
+    grid-area: center;
+    place-self: end;
+    margin: 4px;
+  }
+}

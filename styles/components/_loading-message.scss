@@ -1,0 +1,21 @@
+.bct-loading-message {
+  &::after {
+    content: "";
+    animation: bct-loading-message 2s infinite;
+  }
+}
+
+@keyframes bct-loading-message {
+  0% {
+    content: "";
+  }
+  25% {
+    content: " .";
+  }
+  50% {
+    content: " ..";
+  }
+  75% {
+    content: " ...";
+  }
+}

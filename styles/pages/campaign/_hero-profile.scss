@@ -1,0 +1,72 @@
+.bct-campaign-hero-profile {
+  margin-bottom: 8px;
+  display: grid;
+  grid:
+    "profile-card inventory" auto
+    "characteristics inventory" 1fr
+    / auto minmax(0, 1fr);
+  place-items: start;
+  gap: 8px 16px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+
+  //
+  // profile card
+  //
+
+  &__profile-card {
+    grid-area: profile-card;
+  }
+
+  //
+  // characteristics
+  //
+
+  &__characteristics {
+    grid-area: characteristics;
+    justify-self: center;
+
+    display: grid;
+    grid:
+      "str dex int" auto
+      "wis con cha" auto
+      / auto auto auto;
+    gap: 8px;
+    place-items: center;
+
+    &--str {
+      grid-area: str;
+    }
+    &--dex {
+      grid-area: dex;
+    }
+    &--int {
+      grid-area: int;
+    }
+    &--wis {
+      grid-area: wis;
+    }
+    &--con {
+      grid-area: con;
+    }
+    &--cha {
+      grid-area: cha;
+    }
+  }
+
+  //
+  // inventory
+  //
+
+  &__inventory {
+    grid-area: inventory;
+  }
+
+  &__abilities,
+  &__items {
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
