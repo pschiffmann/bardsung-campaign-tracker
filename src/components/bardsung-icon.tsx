@@ -161,12 +161,14 @@ export interface BardsungIconProps {
   readonly name: BardsungIconName;
   readonly text?: string;
   readonly className?: string;
+  onClick?(): void;
 }
 
 const BardsungIconMemo = memo<BardsungIconProps>(function BardsungIcon({
   name,
   text,
   className,
+  onClick,
 }) {
   const url =
     name === "blank"
@@ -178,6 +180,7 @@ const BardsungIconMemo = memo<BardsungIconProps>(function BardsungIcon({
     <i
       className={cls.block(className, text && text.length > 2 && "long-text")}
       style={{ backgroundImage: `url("${url}")` }}
+      onClick={onClick}
     >
       {text}
     </i>

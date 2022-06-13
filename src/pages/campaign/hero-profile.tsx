@@ -1,68 +1,132 @@
-import { FC } from "react";
+import { FC, useState } from "react";
+import { HeroState } from "../../campaign-state/index.js";
 import { BardsungIcon } from "../../components/bardsung-icon.js";
 import {
   AbilityCard,
   HeroProfileCard,
   ItemCard,
 } from "../../components/cards.js";
+import { Dialog } from "../../components/dialog.js";
+import { abilities, AbilityName } from "../../content/abilities.js";
+import {
+  Characteristic,
+  characteristics,
+  HeroName,
+} from "../../content/heroes.js";
+import { ItemName } from "../../content/items.js";
 import { bemClasses } from "../../util/bem-classes.js";
+import { useDispatch } from "./use-dispatch.js";
 
 const cls = bemClasses("bct-campaign-hero-profile");
 
 export interface HeroProfileProps {
-  readonly name: string;
+  readonly heroName: HeroName;
+  readonly heroState: HeroState;
+  readonly unassignedAbilities: readonly AbilityName[];
+  readonly totalXp: number;
 }
 
-export const HeroProfile: FC<HeroProfileProps> = ({ name }) => {
+export const HeroProfile: FC<HeroProfileProps> = ({
+  heroName,
+  heroState,
+  unassignedAbilities,
+  totalXp,
+}) => {
+  const dispatch = useDispatch();
+
+  function enhanceAbility(name: AbilityName) {
+    const { enhanceCost } = abilities[name];
+    if (
+      confirm(`Enhance ${heroName}'s ability ${name} for ${enhanceCost} XP?`)
+    ) {
+      dispatch({
+        type: "enhance-ability",
+        timestamp: new Date().toISOString(),
+        hero: heroName,
+        ability: name,
+      });
+    }
+  }
+
+  function levelUpCharacteristic(characteristic: Characteristic) {
+    const newLevel = heroState.characteristics[characteristic] + 1;
+    if (
+      confirm(
+        `Level up ${heroName}'s ${characteristic.toUpperCase()} for ${newLevel} XP?`
+      )
+    ) {
+      dispatch({
+        type: "level-up-characteristic",
+        timestamp: new Date().toISOString(),
+        hero: heroName,
+        characteristic,
+      });
+    }
+  }
+
+  const [dialogContent, setDialogContent] = useState<"abilities" | "items">();
+
   return (
     <div className={cls.block()}>
       <HeroProfileCard
         className={cls.element("profile-card")}
-        name={name as any}
+        name={heroName as HeroName}
       />
 
       <div className={cls.element("characteristics")}>
-        {characteristicsNames.map((characteristic) => (
+        {characteristics.map((characteristic) => (
           <BardsungIcon
+            key={characteristic}
             className={cls.element("characteristic", null, characteristic)}
             name={`Hero-Generic-${characteristic.toUpperCase()}` as any}
-            text="+0"
+            text={`+${heroState.characteristics[characteristic]}`}
+            onClick={() => levelUpCharacteristic(characteristic)}
           />
         ))}
       </div>
 
       <div className={cls.element("inventory")}>
         <div className={cls.element("abilities")}>
-          <AbilityCard
-            className={cls.element("ability")}
-            name="Guiding Strike"
-          />
-          <AbilityCard className={cls.element("ability")} name="Steadfast" />
-          <AbilityCard className={cls.element("ability")} name="Fear of God" />
+          {Object.entries(heroState.abilities).map(([name, level]) => (
+            <AbilityCard
+              key={name}
+              className={cls.element("ability")}
+              name={name as AbilityName}
+              level={level}
+              onEnhancePress={() => enhanceAbility(name as AbilityName)}
+            />
+          ))}
+          <button
+            className={cls.element("add-card")}
+            onClick={() => setDialogContent("abilities")}
+          >
+            +
+          </button>
         </div>
         <div className={cls.element("items")}>
-          <ItemCard
-            className={cls.element("item")}
-            name="Blessed Mace"
-            level={1}
-          />
-          <ItemCard
-            className={cls.element("item")}
-            name="Sunshield"
-            level={2}
-          />
+          {Object.entries(heroState.items).map(([name, level]) => (
+            <ItemCard
+              key={name}
+              className={cls.element("item")}
+              name={name as ItemName}
+              level={level}
+            />
+          ))}
         </div>
-        <BardsungIcon className={cls.element("xp")} name="blank" text="2 XP" />
+        <BardsungIcon
+          className={cls.element("xp")}
+          name="blank"
+          text={`${totalXp - heroState.spentXp} XP`}
+        />
       </div>
+
+      {dialogContent === "abilities" && (
+        <Dialog title="Learn ability">
+          {unassignedAbilities.map((name) => (
+            <AbilityCard key={name} name={name} level={1} />
+          ))}
+        </Dialog>
+      )}
     </div>
   );
 };
-
-const characteristicsNames = [
-  "str",
-  "dex",
-  "int",
-  "wis",
-  "con",
-  "cha",
-] as const;

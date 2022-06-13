@@ -1,5 +1,7 @@
 import { CampaignState } from "../campaign-state/state.js";
 
+export type EncounterName = "1A" | "1B" | "1C" | "2A" | "2B";
+
 export interface Encounter {
   /**
    * Called in between encounters on the last completed encounter. Returns the
@@ -8,7 +10,7 @@ export interface Encounter {
   getNextEncounters(state: CampaignState): Iterable<string>;
 }
 
-export const encounters: Readonly<Record<string, Encounter>> = {
+export const encounters: Readonly<Record<EncounterName, Encounter>> = {
   "1A": {
     getNextEncounters() {
       return ["1B"];

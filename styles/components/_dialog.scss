@@ -1,0 +1,37 @@
+.bct-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+
+  display: grid;
+  grid: "center" 100% / 100%;
+  place-items: stretch;
+
+  &__backdrop {
+    grid-area: center;
+    background-color: #000;
+    opacity: 0.5;
+  }
+
+  &__surface {
+    z-index: 1;
+    grid-area: center;
+    margin: 32px;
+    padding: 0 24px;
+    background-color: #fff;
+  }
+
+  &__title {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+  }
+
+  &__body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    overflow: auto;
+  }
+}

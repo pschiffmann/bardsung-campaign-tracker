@@ -50,17 +50,22 @@ export const CampaignList: FC = () => {
             ))}
           </ul>
         )}
-        <button onClick={() => setNewCampaignOpen((x) => !x)}>
+        <button
+          onClick={() => setNewCampaignOpen((x) => !x)}
+          disabled={!campaignNames}
+        >
           New campaign
         </button>
       </div>
 
-      {newCampaignOpen && <NewCampaign />}
+      {newCampaignOpen && <NewCampaign existing={campaignNames!} />}
     </div>
   );
 };
 
-const NewCampaign: FC = () => {
+const NewCampaign: FC<{
+  readonly existing: string[];
+}> = ({ existing }) => {
   const [createInProgress, setCreateInProgress] = useState(false);
 
   const [name, setName] = useState("");
@@ -127,7 +132,12 @@ const NewCampaign: FC = () => {
       <button
         className={cls.element("create-button")}
         onClick={createCampaign}
-        disabled={!nameValid || selectedHeroes.size < 2 || createInProgress}
+        disabled={
+          !nameValid ||
+          existing.includes(name) ||
+          selectedHeroes.size < 2 ||
+          createInProgress
+        }
       >
         Create campaign
       </button>

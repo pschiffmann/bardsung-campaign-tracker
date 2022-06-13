@@ -1,41 +1,26 @@
-import * as $Promise from "@pschiffmann/std/promise";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { useParams } from "react-router-dom";
-import { History } from "../../campaign-state/index.js";
-import { fetchCampaignHistory } from "../../campaign-state/persistence.js";
 import { BardsungIcon } from "../../components/bardsung-icon.js";
 import { Header } from "../../components/header.js";
 import { LoadingMessage } from "../../components/loading-message.js";
+import { HeroName } from "../../content/heroes.js";
 import { bemClasses } from "../../util/bem-classes.js";
 import { HeroProfile } from "./hero-profile.js";
+import { useCampaignState } from "./use-campaign-state.js";
+import { DispatchContext } from "./use-dispatch.js";
 
 const cls = bemClasses("bct-campaign");
 
 export const Campaign: FC = () => {
   const { name } = useParams();
-  const [history, setHistory] = useState<History>();
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      await $Promise.wait(50);
-      if (cancelled) return;
-      const history = await fetchCampaignHistory(name!);
-      if (cancelled) return;
-      setHistory(history);
-    })();
-
-    return () => {
-      cancelled = true;
-      setHistory(undefined);
-    };
-  }, [name]);
+  const [state, dispatch] = useCampaignState(name!);
 
   return (
     <div className={cls.block()}>
-      {!history ? (
+      {!state ? (
         <LoadingMessage>Loading</LoadingMessage>
       ) : (
-        <>
+        <DispatchContext.Provider value={dispatch}>
           <Header title={`${name} – Bardsung Campaign Tracker`} />
           <h2>Encounter</h2>
           <h2>Tokens</h2>
@@ -100,11 +85,19 @@ export const Campaign: FC = () => {
           <h2>Decks</h2>
           <h2>Possessions</h2>
           <div>
-            <BardsungIcon name="Gold-GoldValue" text="13" />
+            <BardsungIcon name="Gold-GoldValue" text={`${state.gold}`} />
           </div>
           <h2>Heroes</h2>
-          <HeroProfile name="Lightweaver" />
-        </>
+          {Object.entries(state.heroes).map(([name, heroState]) => (
+            <HeroProfile
+              key={name}
+              heroName={name as HeroName}
+              heroState={heroState}
+              unassignedAbilities={state.unassignedAbilities}
+              totalXp={state.totalXp}
+            />
+          ))}
+        </DispatchContext.Provider>
       )}
     </div>
   );

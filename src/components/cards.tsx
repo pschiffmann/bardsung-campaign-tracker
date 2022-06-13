@@ -59,14 +59,16 @@ const heroImages: Record<string, string> = {
 
 export interface AbilityCardProps {
   readonly name: AbilityName;
-  readonly enhanced?: boolean;
+  readonly level: 1 | 2;
   readonly className?: string;
+  onEnhancePress?(): void;
 }
 
 const AbilityCardMemo = memo<AbilityCardProps>(function AbilityCard({
   name,
-  enhanced,
+  level,
   className,
+  onEnhancePress,
 }) {
   const ability = abilities[name];
   return (
@@ -78,8 +80,9 @@ const AbilityCardMemo = memo<AbilityCardProps>(function AbilityCard({
       <div className={cls.ability.element("name")}>{name}</div>
       <BardsungIcon
         className={cls.ability.element("level")}
-        name={enhanced ? "Gold-Level2" : "Gold-Level1"}
-        text={enhanced ? undefined : `${ability.enhanceCost} XP`}
+        name={`Gold-Level${level}`}
+        text={level === 1 ? `${ability.enhanceCost} XP` : undefined}
+        onClick={level === 1 ? onEnhancePress : undefined}
       />
     </div>
   );

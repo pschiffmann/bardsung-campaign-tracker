@@ -31,19 +31,25 @@ export type HeroName =
   | "Swiftclaw"
   | "Wyldshell";
 
+export type Characteristic = "str" | "dex" | "int" | "wis" | "con" | "cha";
+
 export interface HeroData {
   readonly path: HeroPath;
-  readonly startCharacteristics: {
-    readonly str?: 1 | 2;
-    readonly dex?: 1 | 2;
-    readonly int?: 1 | 2;
-    readonly wis?: 1 | 2;
-    readonly con?: 1 | 2;
-    readonly cha?: 1 | 2;
-  };
+  readonly startCharacteristics: Readonly<
+    Partial<Record<Characteristic, 1 | 2>>
+  >;
   readonly startAbilities: readonly AbilityName[];
   readonly startItems: readonly ItemName[];
 }
+
+export const characteristics: readonly Characteristic[] = [
+  "str",
+  "dex",
+  "int",
+  "wis",
+  "con",
+  "cha",
+];
 
 export const heroes: Readonly<Record<HeroName, HeroData>> = {
   Dawnguard: {

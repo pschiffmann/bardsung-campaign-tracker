@@ -69,4 +69,19 @@
     flex-wrap: wrap;
     gap: 8px;
   }
+
+  &__add-card {
+    width: 64px;
+    height: 64px;
+    margin: 58px 32px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #bbb;
+    padding: 0;
+
+    border-radius: 50%;
+    background-color: #eee;
+    color: #bbb;
+    font-size: 32px;
+  }
 }
