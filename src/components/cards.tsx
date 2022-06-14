@@ -1,6 +1,13 @@
 import { memo } from "react";
 import { abilities, AbilityName } from "../content/abilities.js";
-import { heroes, HeroName } from "../content/index.js";
+import {
+  BattleCard,
+  ChallengeCard,
+  CorridorCard,
+  heroes,
+  HeroName,
+  RoomCard,
+} from "../content/index.js";
 import { ItemName } from "../content/items.js";
 import { bemClasses } from "../util/bem-classes.js";
 import { BardsungIcon } from "./bardsung-icon.js";
@@ -111,26 +118,37 @@ const ItemCardMemo = memo<ItemCardProps>(function ItemCard({
 });
 
 export interface ExplorationCardProps {
-  readonly number: number;
-  readonly type: "room" | "corridor" | "battle" | "challenge";
+  readonly name:
+    | RoomCard
+    | CorridorCard
+    | BattleCard
+    | ChallengeCard
+    | `${"R" | "P"}??`
+    | `${"B" | "C"}???`;
   readonly className?: string;
+  onPress?(): void;
 }
 
 const ExplorationCardMemo = memo<ExplorationCardProps>(
-  function ExplorationCard({ number, type, className }) {
+  function ExplorationCard({ name, className, onPress }) {
     return (
-      <div className={cls.exploration.block(className)}>
-        <div className={cls.exploration.element("name")}>
-          {type[0].toUpperCase() + number}
-        </div>
+      <div className={cls.exploration.block(className)} onClick={onPress}>
         <BardsungIcon
-          className={cls.exploration.element("level")}
-          name={`Gold-${type[0].toUpperCase()}${type.substring(1)}` as any}
+          className={cls.exploration.element("icon")}
+          name={explorationCardIcons[name[0] as "R" | "P" | "B" | "C"]}
+          text={name}
         />
       </div>
     );
   }
 );
+
+const explorationCardIcons = {
+  R: "Gold-Room",
+  P: "Gold-Corridor",
+  B: "Gold-Battle",
+  C: "Gold-Challenge",
+} as const;
 
 export {
   HeroProfileCardMemo as HeroProfileCard,

@@ -8,12 +8,18 @@ export interface DialogProps {
   readonly title: string;
   readonly children: ReactNode;
   readonly className?: string;
+  onClose(): void;
 }
 
-export const Dialog: FC<DialogProps> = ({ title, children, className }) => {
+export const Dialog: FC<DialogProps> = ({
+  title,
+  children,
+  className,
+  onClose,
+}) => {
   return createPortal(
     <div className={cls.block()}>
-      <div className={cls.element("backdrop")} />
+      <div className={cls.element("backdrop")} onClick={onClose} />
       <div className={cls.element("surface")}>
         <div className={cls.element("title")}>{title}</div>
         <div className={cls.element("body", className)}>{children}</div>

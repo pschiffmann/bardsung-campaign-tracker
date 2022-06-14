@@ -1,15 +1,23 @@
+@use "exploration-card-deck";
 @use "hero-profile";
 
 .bct-campaign {
   padding: 0 16px;
 
-  &__consumable-token-bar {
+  &__help-text {
+    font-size: 12px;
+    font-style: italic;
+    opacity: 0.87;
+  }
+
+  &__wrap-list {
+    margin: 16px 0;
     display: flex;
     flex-wrap: wrap;
+    gap: 16px;
   }
 
   &__consumable-token-group {
-    margin: 8px 16px;
     display: flex;
     gap: 8px;
   }

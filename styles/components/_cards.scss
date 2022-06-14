@@ -17,6 +17,7 @@
     / 100%;
 
   &__path {
+    z-index: -1;
     grid-area: 1 / 1 / span 2 / span 2;
     place-self: start;
     margin: 4px;
@@ -26,7 +27,6 @@
   }
 
   &__name {
-    z-index: 0;
     grid-area: name;
     font-size: 16px;
     font-weight: bold;
@@ -34,7 +34,6 @@
   }
 
   &__image {
-    z-index: 0;
     grid-area: image;
     width: 160px;
 
@@ -53,6 +52,7 @@
   grid: "center" 100% / 100%;
 
   &__path {
+    z-index: -1;
     grid-area: center;
     place-self: start;
     margin: 4px;
@@ -62,7 +62,6 @@
   }
 
   &__name {
-    z-index: 0;
     grid-area: center;
     font-size: 16px;
     font-weight: bold;
@@ -71,7 +70,6 @@
   }
 
   &__level {
-    z-index: 0;
     grid-area: center;
     place-self: end;
     margin: 4px;
@@ -83,7 +81,6 @@
   grid: "center" 100% / 100%;
 
   &__name {
-    z-index: 0;
     grid-area: center;
     font-size: 16px;
     font-weight: bold;
@@ -92,9 +89,20 @@
   }
 
   &__level {
-    z-index: 0;
     grid-area: center;
     place-self: end;
     margin: 4px;
+  }
+}
+
+.bct-exploration-card {
+  @include _card(180px);
+  grid: "center" 100% / 100%;
+
+  &__icon {
+    grid-area: center;
+    width: 64px;
+    height: 64px;
+    font-size: 22px;
   }
 }

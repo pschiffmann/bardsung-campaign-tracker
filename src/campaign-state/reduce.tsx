@@ -1,7 +1,13 @@
 import { DeepWritable } from "ts-essentials";
 import * as content from "../content/index.js";
+import {
+  BattleCard,
+  ChallengeCard,
+  CorridorCard,
+  RoomCard,
+} from "../content/index.js";
 import { HistoryEntry } from "./history.js";
-import { CampaignState } from "./state.js";
+import { CampaignState, ExplorationCardDeck } from "./state.js";
 
 export function reduce(
   prev: CampaignState,
@@ -41,21 +47,61 @@ const reducers: Reducers = {
           ...heroData.startCharacteristics,
         },
         abilities: {},
-        items: {},
+        items: [],
         spentXp: 0,
       };
       for (const ability of heroData.startAbilities) {
         heroes[name]!.abilities[ability] = 1;
         unassignedAbilities.delete(ability);
       }
-      for (const item of heroData.startItems) {
-        heroes[name]!.items[item] = 1;
-      }
     }
     return { ...prev, heroes, unassignedAbilities: [...unassignedAbilities] };
   },
   "start-encounter"(prev, action) {
     return prev;
+  },
+  "draw-exploration-card"(prev, action) {
+    let prop: "roomDeck" | "corridorDeck" | "battleDeck" | "challengeDeck";
+    switch (action.card[0]) {
+      case "R":
+        prop = "roomDeck";
+        break;
+      case "P":
+        prop = "corridorDeck";
+        break;
+      case "B":
+        prop = "battleDeck";
+        break;
+      case "C":
+        prop = "challengeDeck";
+        break;
+      default:
+        throw new Error("Invalid card.");
+    }
+    const { drawPile, discardPile } = prev[prop] as ExplorationCardDeck<
+      RoomCard | CorridorCard | BattleCard | ChallengeCard
+    >;
+    if (!drawPile.includes(action.card)) {
+      throw new Error("Challenge deck doesn't contain this card.");
+    }
+    return {
+      ...prev,
+      [prop]: {
+        drawPile: drawPile.filter((name) => name !== action.card),
+        discardPile: [...discardPile, action.card],
+      },
+    };
+  },
+  "shuffle-exploration-deck"(prev, action) {
+    const prop = `${action.deck}Deck` as const;
+    const { drawPile, discardPile } = prev[prop];
+    return {
+      ...prev,
+      [prop]: {
+        drawPile: [...drawPile, ...discardPile].sort(),
+        discardPile: [],
+      },
+    };
   },
   "enhance-ability"(prev, action) {
     const hero = prev.heroes[action.hero]!;

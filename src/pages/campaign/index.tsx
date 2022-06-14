@@ -5,6 +5,7 @@ import { Header } from "../../components/header.js";
 import { LoadingMessage } from "../../components/loading-message.js";
 import { HeroName } from "../../content/heroes.js";
 import { bemClasses } from "../../util/bem-classes.js";
+import { ExplorationCardDeck } from "./exploration-card-deck.js";
 import { HeroProfile } from "./hero-profile.js";
 import { useCampaignState } from "./use-campaign-state.js";
 import { DispatchContext } from "./use-dispatch.js";
@@ -24,7 +25,7 @@ export const Campaign: FC = () => {
           <Header title={`${name} – Bardsung Campaign Tracker`} />
           <h2>Encounter</h2>
           <h2>Tokens</h2>
-          <div className={cls.element("consumable-token-bar")}>
+          <div className={cls.element("wrap-list")}>
             <div className={cls.element("consumable-token-group")}>
               <BardsungIcon
                 className={cls.element("consumable-token")}
@@ -83,6 +84,18 @@ export const Campaign: FC = () => {
             </div>
           </div>
           <h2>Decks</h2>
+          <p className={cls.element("help-text")}>
+            Each discard pile shows the last drawn card. Click on a draw pile to
+            draw a random card. Click on a discard pile to shuffle it back into
+            the draw pile. Click on a deck name to see the all cards currently
+            in the deck. In the deck list, click on card to draw it.
+          </p>
+          <div className={cls.element("wrap-list")}>
+            <ExplorationCardDeck type="room" deck={state.roomDeck} />
+            <ExplorationCardDeck type="corridor" deck={state.corridorDeck} />
+            <ExplorationCardDeck type="battle" deck={state.battleDeck} />
+            <ExplorationCardDeck type="challenge" deck={state.challengeDeck} />
+          </div>
           <h2>Possessions</h2>
           <div>
             <BardsungIcon name="Gold-GoldValue" text={`${state.gold}`} />

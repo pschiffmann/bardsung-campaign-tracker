@@ -1,7 +1,14 @@
 import * as t from "typed-validators";
 import { AbilityName } from "../content/abilities.js";
 import * as content from "../content/index.js";
-import { Characteristic, HeroName } from "../content/index.js";
+import {
+  BattleCard,
+  ChallengeCard,
+  Characteristic,
+  CorridorCard,
+  HeroName,
+  RoomCard,
+} from "../content/index.js";
 
 const timestamp = t.alias("timestamp", t.string()).addConstraint((value) => {
   const parsed = Date.parse(value);
@@ -23,6 +30,34 @@ const abilityName = t
   .addConstraint((value) => {
     if (!content.abilities.hasOwnProperty(value)) return "not an ability name";
   });
+const battleCardName = t
+  .alias("battle-card-name", t.string() as t.Type<BattleCard>)
+  .addConstraint((value) => {
+    if (!content.battleCards.includes(value)) {
+      return "not an aspect battle card";
+    }
+  });
+const roomCardName = t
+  .alias("room-card-name", t.string() as t.Type<RoomCard>)
+  .addConstraint((value) => {
+    if (!content.roomCards.includes(value)) {
+      return "not a room card";
+    }
+  });
+const corridorCardName = t
+  .alias("corridor-card-name", t.string() as t.Type<CorridorCard>)
+  .addConstraint((value) => {
+    if (!content.corrdiorCards.includes(value)) {
+      return "not a corridor card";
+    }
+  });
+const challengeCardName = t
+  .alias("challenge-card-name", t.string() as t.Type<ChallengeCard>)
+  .addConstraint((value) => {
+    if (!content.challengeCards.includes(value)) {
+      return "not an aspect challenge card";
+    }
+  });
 
 const startCampaignEntry = t.object({
   type: t.string("start-campaign"),
@@ -33,6 +68,28 @@ const startCampaignEntry = t.object({
 const startEncounterEntry = t.object({
   type: t.string("start-encounter"),
   timestamp,
+});
+
+const drawExplorationCard = t.object({
+  type: t.string("draw-exploration-card"),
+  timestamp,
+  card: t.oneOf(
+    roomCardName,
+    corridorCardName,
+    battleCardName,
+    challengeCardName
+  ),
+});
+
+const shuffleExplorationDeck = t.object({
+  type: t.string("shuffle-exploration-deck"),
+  timestamp,
+  deck: t.oneOf(
+    t.string("room"),
+    t.string("corridor"),
+    t.string("battle"),
+    t.string("challenge")
+  ),
 });
 
 const enhanceAbilityEntry = t.object({
@@ -52,6 +109,8 @@ const levelUpCharacteristic = t.object({
 const historyEntry = t.oneOf(
   startCampaignEntry,
   startEncounterEntry,
+  drawExplorationCard,
+  shuffleExplorationDeck,
   enhanceAbilityEntry,
   levelUpCharacteristic
 );

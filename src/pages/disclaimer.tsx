@@ -5,7 +5,7 @@ import { bemClasses } from "../util/bem-classes.js";
 
 const cls = bemClasses("bct-disclaimer");
 
-export const Index: FC = () => {
+export const Disclaimer: FC = () => {
   return (
     <div className={cls.block()}>
       <Header title="Bardsung Campaign Tracker" />

@@ -1,0 +1,13 @@
+.bct-glossary {
+  padding: 0 12px;
+
+  dt {
+    margin: 8px 0 4px;
+    font-weight: bold;
+  }
+
+  &__source {
+    opacity: 0.38;
+    font-size: 12px;
+  }
+}

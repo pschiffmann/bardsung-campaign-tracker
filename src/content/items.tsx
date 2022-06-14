@@ -1,8 +1,8 @@
 export interface ItemData {}
 
-export type ItemName = "Blessed Mace" | "Sunshield";
+export type ItemName = "Sapphire" | "Diamond";
 
 export const items: Readonly<Record<ItemName, ItemData>> = {
-  "Blessed Mace": {},
-  Sunshield: {},
+  Sapphire: {},
+  Diamond: {},
 };
