@@ -23,13 +23,20 @@ export function useCampaignState(
     const controller = new AbortController();
     const signal = controller.signal;
     (async () => {
-      await $Promise.wait(50);
-      if (signal.aborted) return;
-      const history = await fetchCampaignHistory(name);
-      if (signal.aborted) return;
-      const campaignState = await replayCampaignHistory(history, signal);
-      if (signal.aborted) return;
-      setState({ name, campaignState, history });
+      try {
+        await $Promise.wait(50);
+        if (signal.aborted) return;
+        const history = await fetchCampaignHistory(name);
+        if (signal.aborted) return;
+        const campaignState = await replayCampaignHistory(history, signal);
+        if (signal.aborted) return;
+        setState({ name, campaignState, history });
+      } catch (e) {
+        alert(
+          "Can't read campaign history: " +
+            (e instanceof Error ? e.message : `${e}`)
+        );
+      }
     })();
 
     return () => {
@@ -39,11 +46,15 @@ export function useCampaignState(
   }, [name]);
 
   function dispatch(entry: HistoryEntry) {
-    if (state?.name !== name) return;
-    const campaignState = reduce(state.campaignState, entry);
-    const history = [...state.history, entry];
-    saveCampaignHistory(name, history);
-    setState({ name, campaignState, history });
+    if (!state) return;
+    try {
+      const campaignState = reduce(state.campaignState, entry);
+      const history = [...state.history, entry];
+      saveCampaignHistory(name, history);
+      setState({ name, campaignState, history });
+    } catch (e) {
+      alert(e instanceof Error ? e.message : `${e}`);
+    }
   }
 
   return [state?.name === name ? state.campaignState : undefined, dispatch];

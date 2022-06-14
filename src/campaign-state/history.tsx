@@ -25,11 +25,17 @@ const characteristic = t
   .addConstraint((value) => {
     if (!content.characteristics.includes(value)) return "not a characteristic";
   });
-const abilityName = t
+const ability = t
   .alias<AbilityName>("ability-name", t.string() as t.Type<AbilityName>)
   .addConstraint((value) => {
     if (!content.abilities.hasOwnProperty(value)) return "not an ability name";
   });
+const token = t.oneOf(
+  t.string("charm"),
+  t.string("healing-potion"),
+  t.string("toolkit"),
+  t.string("firewood")
+);
 const battleCardName = t
   .alias("battle-card-name", t.string() as t.Type<BattleCard>)
   .addConstraint((value) => {
@@ -70,6 +76,18 @@ const startEncounterEntry = t.object({
   timestamp,
 });
 
+const exhaustToken = t.object({
+  type: t.string("exhaust-token"),
+  timestamp,
+  token,
+});
+
+const buyToken = t.object({
+  type: t.string("buy-token"),
+  timestamp,
+  token,
+});
+
 const drawExplorationCard = t.object({
   type: t.string("draw-exploration-card"),
   timestamp,
@@ -96,7 +114,7 @@ const enhanceAbilityEntry = t.object({
   type: t.string("enhance-ability"),
   timestamp,
   hero: heroName,
-  ability: abilityName,
+  ability: ability,
 });
 
 const levelUpCharacteristic = t.object({
@@ -109,6 +127,8 @@ const levelUpCharacteristic = t.object({
 const historyEntry = t.oneOf(
   startCampaignEntry,
   startEncounterEntry,
+  exhaustToken,
+  buyToken,
   drawExplorationCard,
   shuffleExplorationDeck,
   enhanceAbilityEntry,
@@ -116,5 +136,5 @@ const historyEntry = t.oneOf(
 );
 export type HistoryEntry = t.ExtractType<typeof historyEntry>;
 
-const history = t.array(historyEntry);
-export type History = t.ExtractType<typeof history>;
+export const historyValidator = t.array(historyEntry);
+export type History = t.ExtractType<typeof historyValidator>;

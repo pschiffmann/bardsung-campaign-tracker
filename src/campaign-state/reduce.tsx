@@ -13,12 +13,7 @@ export function reduce(
   prev: CampaignState,
   action: HistoryEntry
 ): CampaignState {
-  try {
-    return reducers[action.type](prev, action as any);
-  } catch (e) {
-    alert(e instanceof Error ? e.message : `${e}`);
-    throw e;
-  }
+  return reducers[action.type](prev, action as any);
 }
 
 type EntryOfType<E, T> = E extends { readonly type: T } ? E : never;
@@ -32,6 +27,12 @@ type Reducers = {
 
 const reducers: Reducers = {
   "start-campaign"(prev, action) {
+    if (Object.getOwnPropertyNames(action.heroes).length === 0) {
+      throw new Error("`heroes` must not be empty.");
+    }
+    if (Object.getOwnPropertyNames(prev.heroes).length !== 0) {
+      throw new Error("`start-campaign` must be the first history entry.");
+    }
     const heroes: DeepWritable<CampaignState["heroes"]> = {};
     const unassignedAbilities = new Set(prev.unassignedAbilities);
     for (const name of action.heroes) {
@@ -59,6 +60,21 @@ const reducers: Reducers = {
   },
   "start-encounter"(prev, action) {
     return prev;
+  },
+  "exhaust-token"(prev, action) {
+    const n = prev.tokens[action.token];
+    if (n === 0) throw new Error("No token left.");
+    return { ...prev, tokens: { ...prev.tokens, [action.token]: n - 1 } };
+  },
+  "buy-token"(prev, action) {
+    const n = prev.tokens[action.token];
+    if (n === 3) throw new Error("No token exhausted.");
+    if (prev.gold < 7) throw new Error("Not enough gold.");
+    return {
+      ...prev,
+      tokens: { ...prev.tokens, [action.token]: n + 1 },
+      gold: prev.gold - 7,
+    };
   },
   "draw-exploration-card"(prev, action) {
     let prop: "roomDeck" | "corridorDeck" | "battleDeck" | "challengeDeck";

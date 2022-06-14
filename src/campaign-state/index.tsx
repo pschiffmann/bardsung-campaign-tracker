@@ -14,11 +14,19 @@ export async function replayCampaignHistory(
 ): Promise<CampaignState> {
   let result = initCampaignState();
   let batchStarted: number | undefined;
-  for (const entry of history) {
+  for (let i = 0; i < history.length; i++) {
     if (signal.aborted) break;
-
     batchStarted ??= Date.now();
-    result = reduce(result, entry);
+
+    try {
+      result = reduce(result, history[i]);
+    } catch (e) {
+      throw new Error(
+        `Error while replaying history entry ${i}, ` +
+          `${JSON.stringify(history[i])}: ` +
+          (e instanceof Error ? e.message : `${e}`)
+      );
+    }
 
     if (Date.now() - batchStarted > 16) {
       batchStarted = undefined;

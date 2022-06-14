@@ -7,6 +7,7 @@ import { HeroName } from "../../content/heroes.js";
 import { bemClasses } from "../../util/bem-classes.js";
 import { ExplorationCardDeck } from "./exploration-card-deck.js";
 import { HeroProfile } from "./hero-profile.js";
+import { Tokens } from "./tokens.js";
 import { useCampaignState } from "./use-campaign-state.js";
 import { DispatchContext } from "./use-dispatch.js";
 
@@ -25,64 +26,11 @@ export const Campaign: FC = () => {
           <Header title={`${name} – Bardsung Campaign Tracker`} />
           <h2>Encounter</h2>
           <h2>Tokens</h2>
-          <div className={cls.element("wrap-list")}>
-            <div className={cls.element("consumable-token-group")}>
-              <BardsungIcon
-                className={cls.element("consumable-token")}
-                name="Gold-Charm"
-              />
-              <BardsungIcon
-                className={cls.element("consumable-token")}
-                name="Gold-Charm"
-              />
-              <BardsungIcon
-                className={cls.element("consumable-token")}
-                name="Gold-Charm"
-              />
-            </div>
-            <div className={cls.element("consumable-token-group")}>
-              <BardsungIcon
-                className={cls.element("consumable-token")}
-                name="Gold-HealingPotion"
-              />
-              <BardsungIcon
-                className={cls.element("consumable-token")}
-                name="Gold-HealingPotion"
-              />
-              <BardsungIcon
-                className={cls.element("consumable-token")}
-                name="Gold-HealingPotion"
-              />
-            </div>
-            <div className={cls.element("consumable-token-group")}>
-              <BardsungIcon
-                className={cls.element("consumable-token")}
-                name="Gold-Toolkit"
-              />
-              <BardsungIcon
-                className={cls.element("consumable-token")}
-                name="Gold-Toolkit"
-              />
-              <BardsungIcon
-                className={cls.element("consumable-token", null, "exhausted")}
-                name="Gold-Toolkit"
-              />
-            </div>
-            <div className={cls.element("consumable-token-group")}>
-              <BardsungIcon
-                className={cls.element("consumable-token")}
-                name="Gold-Firewood"
-              />
-              <BardsungIcon
-                className={cls.element("consumable-token")}
-                name="Gold-Firewood"
-              />
-              <BardsungIcon
-                className={cls.element("consumable-token")}
-                name="Gold-Firewood"
-              />
-            </div>
-          </div>
+          <p className={cls.element("help-text")}>
+            Click on a token to exhaust it. Click on an exhausted token while
+            not in an encounter to buy it back for 7 gold.
+          </p>
+          <Tokens tokens={state.tokens} />
           <h2>Decks</h2>
           <p className={cls.element("help-text")}>
             Each discard pile shows the last drawn card. Click on a draw pile to
@@ -96,7 +44,7 @@ export const Campaign: FC = () => {
             <ExplorationCardDeck type="battle" deck={state.battleDeck} />
             <ExplorationCardDeck type="challenge" deck={state.challengeDeck} />
           </div>
-          <h2>Possessions</h2>
+          <h2>Stash</h2>
           <div>
             <BardsungIcon name="Gold-GoldValue" text={`${state.gold}`} />
           </div>
