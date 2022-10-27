@@ -58,8 +58,70 @@ const reducers: Reducers = {
     }
     return { ...prev, heroes, unassignedAbilities: [...unassignedAbilities] };
   },
+  "start-chapter"(prev, action) {
+    if (prev.currentChapter !== null) {
+      throw new Error("Current chapter not completed.");
+    }
+    if (prev.chapterProgress.hasOwnProperty(action.chapter)) {
+      throw new Error("Already completed this chapter.");
+    }
+    const data = content.chapters[action.chapter];
+    return {
+      ...prev,
+      currentChapter: action.chapter,
+      roomDeck: {
+        drawPile: prev.roomDeck.drawPile
+          .filter((card) => !data.removeRoomCards.includes(card))
+          .concat(data.addRoomCards)
+          .sort(),
+        discardPile: prev.roomDeck.discardPile.filter(
+          (card) => !data.removeRoomCards.includes(card)
+        ),
+      },
+      battleDeck: {
+        drawPile: prev.battleDeck.drawPile
+          .filter((card) => !data.removeBattleCards.includes(card))
+          .concat(data.addBattleCards)
+          .sort(),
+        discardPile: prev.battleDeck.discardPile.filter(
+          (card) => !data.removeBattleCards.includes(card)
+        ),
+      },
+      challengeDeck: {
+        drawPile: prev.challengeDeck.drawPile
+          .filter((card) => !data.removeChallengeCards.includes(card))
+          .concat(data.addChallengeCards)
+          .sort(),
+        discardPile: prev.challengeDeck.discardPile.filter(
+          (card) => !data.removeChallengeCards.includes(card)
+        ),
+      },
+      lostTreasure: data.lostTreasure,
+    };
+  },
+  "complete-chapter"(prev) {
+    if (prev.currentEncounter) {
+      throw new Error("Must complete the current encounter first.");
+    }
+    if (!prev.currentChapter) {
+      throw new Error("No chapter selected.");
+    }
+    return { ...prev, currentChapter: null };
+  },
   "start-encounter"(prev, action) {
     return prev;
+  },
+  "fail-encounter"(prev) {
+    return {
+      ...prev,
+      tokens: {
+        charm: Math.max(prev.tokens.charm, 1) as 1,
+        "healing-potion": Math.max(prev.tokens["healing-potion"], 1) as 1,
+        toolkit: Math.max(prev.tokens.toolkit, 1) as 1,
+        firewood: Math.max(prev.tokens.firewood, 1) as 1,
+      },
+      gold: 0,
+    };
   },
   "exhaust-token"(prev, action) {
     const n = prev.tokens[action.token];

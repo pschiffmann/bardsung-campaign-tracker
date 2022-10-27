@@ -5,6 +5,10 @@
 .bct-campaign {
   padding: 0 16px;
 
+  h2 {
+    margin-top: 8px;
+  }
+
   &__help-text {
     font-size: 12px;
     font-style: italic;
@@ -12,20 +16,9 @@
   }
 
   &__wrap-list {
-    margin: 16px 0;
+    margin: 8px 0;
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-  }
-
-  &__consumable-token-group {
-    display: flex;
-    gap: 8px;
-  }
-
-  &__consumable-token {
-    &--exhausted {
-      opacity: 0.38;
-    }
   }
 }

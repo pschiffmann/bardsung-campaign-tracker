@@ -104,12 +104,12 @@ export const HeroProfile: FC<HeroProfileProps> = ({
           </button>
         </div>
         <div className={cls.element("items")}>
-          {Object.entries(heroState.items).map(([name, level]) => (
+          {heroState.items.map((name) => (
             <ItemCard
               key={name}
               className={cls.element("item")}
               name={name as ItemName}
-              level={level}
+              level={1}
             />
           ))}
         </div>
@@ -121,7 +121,10 @@ export const HeroProfile: FC<HeroProfileProps> = ({
       </div>
 
       {dialogContent === "abilities" && (
-        <Dialog title="Learn ability">
+        <Dialog
+          title="Learn ability"
+          onClose={() => setDialogContent(undefined)}
+        >
           {unassignedAbilities.map((name) => (
             <AbilityCard key={name} name={name} level={1} />
           ))}

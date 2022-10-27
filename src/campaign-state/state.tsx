@@ -1,5 +1,4 @@
 import { abilities, AbilityName } from "../content/abilities.js";
-import { EncounterName } from "../content/encounters.js";
 import {
   BattleCard,
   battleCards,
@@ -14,14 +13,15 @@ import { Characteristic, HeroName } from "../content/heroes.js";
 import { ItemName } from "../content/items.js";
 
 export interface CampaignState {
-  readonly completedEncounters: readonly EncounterName[];
-  readonly currentEncounter: EncounterName | null;
+  readonly chapterProgress: Readonly<Record<string, ChapterProgress>>;
+  readonly currentChapter: string | null;
+  readonly currentEncounter: number | null;
 
   readonly tokens: Readonly<
     Record<"charm" | "healing-potion" | "toolkit" | "firewood", 0 | 1 | 2 | 3>
   >;
 
-  readonly reputation: `${"goodwill" | "corruption"} ${"1" | "2" | "3" | "4"}`;
+  readonly reputation: `${"1" | "2" | "3" | "4"} ${"goodwill" | "corruption"}`;
 
   readonly roomDeck: ExplorationCardDeck<RoomCard>;
   readonly corridorDeck: ExplorationCardDeck<CorridorCard>;
@@ -31,9 +31,18 @@ export interface CampaignState {
   readonly unassignedAbilities: readonly AbilityName[];
   readonly unassignedItems: readonly ItemName[];
   readonly gold: number;
+  readonly lostTreasure: number;
 
   readonly heroes: Readonly<Partial<Record<HeroName, HeroState>>>;
   readonly totalXp: number;
+}
+
+export interface ChapterProgress {
+  /**
+   * Contains encounter numbers, where encounter "a" is 0.
+   */
+  readonly completedEncounters: readonly number[];
+  readonly completedGoals: readonly number[];
 }
 
 export interface ExplorationCardDeck<
@@ -52,10 +61,11 @@ export interface HeroState {
 
 export function initCampaignState(): CampaignState {
   return {
-    completedEncounters: [],
+    chapterProgress: {},
+    currentChapter: null,
     currentEncounter: null,
     tokens: { charm: 3, "healing-potion": 3, toolkit: 3, firewood: 3 },
-    reputation: "goodwill 1",
+    reputation: "1 goodwill",
     roomDeck: { drawPile: roomCards.slice(0, 13), discardPile: [] },
     corridorDeck: { drawPile: corrdiorCards, discardPile: [] },
     battleDeck: { drawPile: battleCards.slice(0, 8), discardPile: [] },
@@ -63,6 +73,7 @@ export function initCampaignState(): CampaignState {
     unassignedAbilities: Object.keys(abilities) as AbilityName[],
     unassignedItems: [],
     gold: 0,
+    lostTreasure: 0,
     heroes: {},
     totalXp: 3,
   };

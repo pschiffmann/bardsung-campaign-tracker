@@ -30,6 +30,9 @@ const ability = t
   .addConstraint((value) => {
     if (!content.abilities.hasOwnProperty(value)) return "not an ability name";
   });
+const chapter = t.alias("chapter", t.string()).addConstraint((value) => {
+  if (!content.chapters.hasOwnProperty(value)) return "not a chapter.";
+});
 const token = t.oneOf(
   t.string("charm"),
   t.string("healing-potion"),
@@ -71,8 +74,24 @@ const startCampaignEntry = t.object({
   heroes: t.array(heroName),
 });
 
+const startChapter = t.object({
+  type: t.string("start-chapter"),
+  timestamp,
+  chapter: t.string(),
+});
+
+const completeChapter = t.object({
+  type: t.string("complete-chapter"),
+  timestamp,
+});
+
 const startEncounterEntry = t.object({
   type: t.string("start-encounter"),
+  timestamp,
+});
+
+const failEncounter = t.object({
+  type: t.string("fail-encounter"),
   timestamp,
 });
 
@@ -126,7 +145,10 @@ const levelUpCharacteristic = t.object({
 
 const historyEntry = t.oneOf(
   startCampaignEntry,
+  startChapter,
+  completeChapter,
   startEncounterEntry,
+  failEncounter,
   exhaustToken,
   buyToken,
   drawExplorationCard,
